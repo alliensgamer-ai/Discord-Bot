@@ -13,21 +13,19 @@ Bot base de Discord construido con Node.js, TypeScript y `discord.js`.
 
 1. Crea una aplicación en el [Discord Developer Portal](https://discord.com/developers/applications).
 2. Crea un bot dentro de la aplicación y copia su token.
-3. Añade estas variables como Secrets del proyecto:
-   - `DISCORD_TOKEN`
-   - `DISCORD_CLIENT_ID`
-   - `DISCORD_GUILD_ID` (opcional, pero recomendado para desarrollo)
-4. Invita el bot con los scopes `bot` y `applications.commands`.
-5. Registra los comandos:
-
-   ```bash
-   pnpm --filter @workspace/discord-bot run deploy-commands
-   ```
-
+3. Añade `DISCORD_TOKEN` como Secret del proyecto.
+4. Opcionalmente, añade `DISCORD_GUILD_ID` como variable de entorno durante desarrollo. Así los comandos se actualizan al instante en ese servidor.
+5. Invita el bot con los scopes `bot` y `applications.commands`.
 6. Inicia el bot:
 
    ```bash
    pnpm --filter @workspace/discord-bot run dev
+   ```
+
+El bot registra sus comandos automáticamente al conectarse. Si prefieres registrar los comandos manualmente, añade también `DISCORD_CLIENT_ID` y ejecuta:
+
+   ```bash
+   pnpm --filter @workspace/discord-bot run deploy-commands
    ```
 
 Si `DISCORD_GUILD_ID` no está definido, los comandos se registran globalmente y Discord puede tardar en propagarlos.

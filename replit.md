@@ -1,10 +1,12 @@
-# [Project name]
+# Discord Bot
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Bot de Discord con comandos slash construido con Node.js, TypeScript y discord.js.
 
 ## Run & Operate
 
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/discord-bot run dev` — run the Discord bot
+- `pnpm --filter @workspace/discord-bot run deploy-commands` — register commands manually
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
@@ -14,6 +16,7 @@ _Replace the heading above with the project's name, and this line with one sente
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
+- Discord bot: discord.js 14, slash commands
 - API: Express 5
 - DB: PostgreSQL + Drizzle ORM
 - Validation: Zod (`zod/v4`), `drizzle-zod`
@@ -22,23 +25,29 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `bots/discord-bot/src/index.ts` — Discord client, event handling, and command behavior
+- `bots/discord-bot/src/commands.ts` — slash-command definitions and help text
+- `bots/discord-bot/src/register-commands.ts` — optional manual command registration
+- `bots/discord-bot/README.md` — setup and invitation instructions
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The bot requests only the `Guilds` gateway intent because all current features use slash commands.
+- Commands register automatically after login; `DISCORD_GUILD_ID` can be used to target a development server.
+- Secrets stay in Replit Secrets; the token is never stored in source files or `.env` files.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+The bot responds to `/ping`, `/help`, `/echo`, and `/server`. It runs as a persistent console workflow and can be extended with additional slash commands.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+The user requested Node.js and discord.js.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Global Discord commands can take time to propagate. Set `DISCORD_GUILD_ID` during development for immediate updates.
+- The Discord bot workflow requires the `DISCORD_TOKEN` Secret.
 
 ## Pointers
 

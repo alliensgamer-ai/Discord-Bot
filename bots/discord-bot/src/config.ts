@@ -1,5 +1,3 @@
-import { logger } from "./logger.js";
-
 function requiredEnv(name: string): string {
   const value = process.env[name]?.trim();
 
@@ -15,9 +13,3 @@ export const config = {
   clientId: process.env.DISCORD_CLIENT_ID?.trim(),
   guildId: process.env.DISCORD_GUILD_ID?.trim(),
 };
-
-if (!config.clientId) {
-  logger.warn(
-    "DISCORD_CLIENT_ID no está configurado; el bot puede iniciar, pero no se podrán registrar comandos.",
-  );
-}

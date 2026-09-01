@@ -5,7 +5,7 @@ import {
   GatewayIntentBits,
   type ChatInputCommandInteraction,
 } from "discord.js";
-import { commandHelp } from "./commands.js";
+import { commandDefinitions, commandHelp } from "./commands.js";
 import { config } from "./config.js";
 import { logger } from "./logger.js";
 
@@ -13,11 +13,28 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds],
 });
 
-client.once(Events.ClientReady, (readyClient) => {
+client.once(Events.ClientReady, async (readyClient) => {
   logger.info("Bot conectado a Discord.", {
     tag: readyClient.user.tag,
     guilds: readyClient.guilds.cache.size,
   });
+
+  try {
+    if (config.guildId) {
+      await readyClient.application.commands.set(commandDefinitions, config.guildId);
+    } else {
+      await readyClient.application.commands.set(commandDefinitions);
+    }
+    logger.info(
+      config.guildId
+        ? `Comandos registrados en el servidor ${config.guildId}.`
+        : "Comandos registrados globalmente.",
+    );
+  } catch (error) {
+    logger.error("No se pudieron registrar los comandos al iniciar.", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {

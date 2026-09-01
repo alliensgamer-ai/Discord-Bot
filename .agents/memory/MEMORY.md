@@ -1,0 +1,1 @@
+- [Workspace package installation](pnpm-workspace-install.md) — declare dependencies in the target workspace package, then install from the workspace root.
