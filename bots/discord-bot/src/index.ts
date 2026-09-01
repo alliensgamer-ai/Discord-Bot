@@ -12,6 +12,33 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds],
 });
 
+client.on(Events.ShardDisconnect, (event, shardId) => {
+  logger.warn("Discord Gateway disconnect.", {
+    shardId,
+    code: event.code,
+    reason: event.reason,
+    wasClean: event.wasClean,
+  });
+});
+
+client.on(Events.ShardReconnecting, (shardId) => {
+  logger.info("Discord Gateway reconnecting.", { shardId });
+});
+
+client.on(Events.ShardResume, (shardId, replayedEvents) => {
+  logger.info("Discord Gateway reconnect.", {
+    shardId,
+    replayedEvents,
+  });
+});
+
+client.on(Events.ShardReady, (shardId, unavailableGuilds) => {
+  logger.info("Discord Gateway ready.", {
+    shardId,
+    unavailableGuilds: unavailableGuilds?.size ?? 0,
+  });
+});
+
 client.once(Events.ClientReady, async (readyClient) => {
   logger.info("Bot conectado a Discord.", {
     tag: readyClient.user.tag,

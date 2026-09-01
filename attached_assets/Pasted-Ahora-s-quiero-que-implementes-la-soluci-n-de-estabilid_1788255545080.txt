@@ -1,0 +1,62 @@
+Ahora sí quiero que implementes la solución de estabilidad que acabas de diagnosticar.
+
+IMPORTANTE:
+
+* No cambies DISCORD_TOKEN.
+* No cambies PostgreSQL.
+* No modifiques ningún comando ni lógica del ranking.
+* No borres datos.
+* No cambies permisos de Discord.
+* No uses pings, spam, loops artificiales ni trucos para mantener vivo el proceso.
+
+OBJETIVO:
+Quiero que el bot de Discord permanezca funcionando 24/7 aunque yo cierre Replit y no vuelva a abrir la aplicación.
+
+Según tu diagnóstico, actualmente el bot funciona como Workflow de desarrollo y no existe ningún Deployment activo.
+
+Configura el proyecto para utilizar el tipo de Deployment apropiado para un bot de Discord que necesita un proceso persistente, preferiblemente Reserved VM.
+
+Necesito que:
+
+1. Configures el comando de producción correcto para ejecutar exclusivamente el bot.
+2. No utilices el workflow de desarrollo como método principal de producción.
+3. Configures el Deployment persistente apropiado.
+4. Mantengas todas las variables Secrets existentes, especialmente DISCORD_TOKEN.
+5. Mantengas PostgreSQL funcionando.
+6. No dupliques procesos del bot.
+7. No ejecutes simultáneamente el workflow dev y el deployment de producción.
+8. Verifiques que el bot se conecta correctamente después del Deployment.
+9. Compruebes que los slash commands siguen registrados.
+10. Compruebes que el bot puede permanecer ejecutándose aunque cierre la sesión de Replit.
+
+Además, agrega únicamente logs de diagnóstico para Discord Gateway:
+
+* disconnect
+* reconnect
+* reconnecting
+* error
+* ready
+
+Esto es solo para poder detectar futuras desconexiones; no cambies la lógica de los comandos.
+
+Si Reserved VM no está disponible en mi plan actual:
+
+* NO cambies nada destructivo.
+* NO borres el proyecto.
+* NO cambies el token.
+* Dime exactamente qué opción de Deployment aparece disponible y qué plan/requisito necesito para mantener el bot 24/7.
+
+Si sí está disponible:
+
+* Configúralo.
+* Publícalo.
+* Verifica los logs.
+* Confirma que el proceso queda activo independientemente de que yo tenga Replit abierto.
+
+Al finalizar dime exactamente:
+
+* Deployment utilizado.
+* Comando de producción utilizado.
+* Estado del Deployment.
+* Estado de conexión a Discord.
+* Si requiere alguna acción manual de mi parte.
