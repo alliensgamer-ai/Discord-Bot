@@ -3,6 +3,7 @@ modules = ["nodejs-24", "postgresql-16", "python-base-3.13"]
 [deployment]
 router = "application"
 deploymentTarget = "vm"
+build = ["pnpm", "--filter", "@workspace/discord-bot", "run", "build"]
 run = ["pnpm", "--filter", "@workspace/discord-bot", "run", "start"]
 
 [deployment.postBuild]
