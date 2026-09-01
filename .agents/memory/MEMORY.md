@@ -1,2 +1,3 @@
 - [Workspace package installation](pnpm-workspace-install.md) — declare dependencies in the target workspace package, then install from the workspace root.
 - [Season archive model](season-archive-model.md) — keep active totals on player records and snapshot them before starting a new season.
+- [Static Discord replies](static-discord-replies.md) — help and other static commands must reply immediately without service or database work.

@@ -41,8 +41,19 @@ client.on(Events.InteractionCreate, async (interaction) => {
     return;
   }
 
+  logger.info("Interacción recibida.", {
+    command: interaction.commandName,
+    user: interaction.user.tag,
+    channel: interaction.channelId,
+  });
+
   try {
     await handleCommand(interaction, client);
+    logger.info("Interacción respondida.", {
+      command: interaction.commandName,
+      replied: interaction.replied,
+      deferred: interaction.deferred,
+    });
   } catch (error) {
     logger.error("Error procesando un comando.", {
       command: interaction.commandName,
@@ -57,10 +68,21 @@ client.on(Events.InteractionCreate, async (interaction) => {
       ephemeral: true,
     };
 
-    if (interaction.replied || interaction.deferred) {
-      await interaction.followUp(reply);
-    } else {
-      await interaction.reply(reply);
+    try {
+      if (interaction.deferred) {
+        await interaction.editReply(reply);
+      } else if (interaction.replied) {
+        await interaction.followUp(reply);
+      } else {
+        await interaction.reply(reply);
+      }
+    } catch (replyError) {
+      logger.error("No se pudo enviar la respuesta de error.", {
+        command: interaction.commandName,
+        error: replyError instanceof Error ? replyError.message : String(replyError),
+        alreadyReplied: interaction.replied,
+        deferred: interaction.deferred,
+      });
     }
   }
 });

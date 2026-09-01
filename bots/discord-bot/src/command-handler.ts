@@ -49,7 +49,10 @@ export async function handleCommand(
   interaction: ChatInputCommandInteraction,
   client: Client,
 ) {
-  if (rankingCommands.has(interaction.commandName) && !ensureRankingChannel(interaction)) {
+  if (
+    rankingCommands.has(interaction.commandName) &&
+    !(await ensureRankingChannel(interaction))
+  ) {
     return;
   }
 
@@ -59,7 +62,7 @@ export async function handleCommand(
       return;
     case "help":
     case "ayuda":
-      await interaction.reply({ embeds: [helpEmbed()] });
+      await replyHelp(interaction);
       return;
     case "echo":
       await interaction.reply(interaction.options.getString("mensaje", true));
@@ -518,16 +521,14 @@ function isRankingAdmin(interaction: ChatInputCommandInteraction) {
     : roles.cache.has(config.rankingAdminRoleId);
 }
 
-function ensureRankingChannel(interaction: ChatInputCommandInteraction) {
+async function ensureRankingChannel(interaction: ChatInputCommandInteraction) {
   if (!config.rankingChannelId || interaction.channelId === config.rankingChannelId) {
     return true;
   }
-  interaction
-    .reply({
-      content: `Este comando debe utilizarse en <#${config.rankingChannelId}>.`,
-      ephemeral: true,
-    })
-    .catch(() => undefined);
+  await interaction.reply({
+    content: `Este comando debe utilizarse en <#${config.rankingChannelId}>.`,
+    ephemeral: true,
+  });
   return false;
 }
 
@@ -600,6 +601,13 @@ function helpEmbed() {
       { name: "ADMINISTRACIÓN", value: commandHelp.administration.map(([name, description]) => `**${name}** — ${description}`).join("\n") },
     )
     .setColor(0x5865f2);
+}
+
+async function replyHelp(interaction: ChatInputCommandInteraction) {
+  await interaction.reply({
+    embeds: [helpEmbed()],
+    ephemeral: true,
+  });
 }
 
 function activityTypeLabel(type: ActivityType) {
