@@ -402,9 +402,15 @@ importers:
 
   bots/discord-bot:
     dependencies:
+      '@workspace/db':
+        specifier: workspace:*
+        version: link:../../lib/db
       discord.js:
         specifier: ^14.21.0
         version: 14.27.0
+      drizzle-orm:
+        specifier: 'catalog:'
+        version: 0.45.2(@types/pg@8.20.0)(pg@8.22.0)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'

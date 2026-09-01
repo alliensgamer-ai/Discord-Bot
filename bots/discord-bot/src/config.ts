@@ -12,4 +12,5 @@ export const config = {
   token: requiredEnv("DISCORD_TOKEN"),
   clientId: process.env.DISCORD_CLIENT_ID?.trim(),
   guildId: process.env.DISCORD_GUILD_ID?.trim(),
+  rankingAdminRoleId: process.env.RANKING_ADMIN_ROLE_ID?.trim(),
 };

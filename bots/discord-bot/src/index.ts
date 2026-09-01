@@ -1,11 +1,10 @@
 import {
   Client,
-  EmbedBuilder,
   Events,
   GatewayIntentBits,
-  type ChatInputCommandInteraction,
 } from "discord.js";
-import { commandDefinitions, commandHelp } from "./commands.js";
+import { commandDefinitions } from "./commands.js";
+import { handleCommand } from "./command-handler.js";
 import { config } from "./config.js";
 import { logger } from "./logger.js";
 
@@ -43,7 +42,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 
   try {
-    await handleCommand(interaction);
+    await handleCommand(interaction, client);
   } catch (error) {
     logger.error("Error procesando un comando.", {
       command: interaction.commandName,
@@ -62,51 +61,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
     }
   }
 });
-
-async function handleCommand(interaction: ChatInputCommandInteraction) {
-  switch (interaction.commandName) {
-    case "ping": {
-      await interaction.reply(`Pong. Latencia: ${client.ws.ping} ms.`);
-      return;
-    }
-    case "help": {
-      const embed = new EmbedBuilder()
-        .setTitle("Comandos disponibles")
-        .setDescription("Usa cualquiera de estos comandos slash:")
-        .addFields(commandHelp.map((command) => ({ name: command.name, value: command.description })))
-        .setColor(0x5865f2);
-
-      await interaction.reply({ embeds: [embed] });
-      return;
-    }
-    case "echo": {
-      const message = interaction.options.getString("mensaje", true);
-      await interaction.reply(message);
-      return;
-    }
-    case "server": {
-      if (!interaction.guild) {
-        await interaction.reply({
-          content: "Este comando solo funciona dentro de un servidor.",
-          ephemeral: true,
-        });
-        return;
-      }
-
-      await interaction.reply(
-        `Servidor: **${interaction.guild.name}**\n` +
-          `Miembros: **${interaction.guild.memberCount}**\n` +
-          `Creado: <t:${Math.floor(interaction.guild.createdTimestamp / 1000)}:D>`,
-      );
-      return;
-    }
-    default:
-      await interaction.reply({
-        content: "Ese comando todavía no está configurado.",
-        ephemeral: true,
-      });
-  }
-}
 
 client.on(Events.Error, (error) => {
   logger.error("Discord reportó un error.", {
