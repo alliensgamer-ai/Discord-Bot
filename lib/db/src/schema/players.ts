@@ -10,6 +10,12 @@ export const rankingPlayersTable = pgTable("ranking_players", {
   secondPlaceCount: integer("second_place_count").notNull().default(0),
   thirdPlaceCount: integer("third_place_count").notNull().default(0),
   lastPlaceCount: integer("last_place_count").notNull().default(0),
+  compePlayed: integer("compe_played").notNull().default(0),
+  guerraPlayed: integer("guerra_played").notNull().default(0),
+  vv2Played: integer("vv2_played").notNull().default(0),
+  activityCount: integer("activity_count").notNull().default(0),
+  activityPoints: integer("activity_points").notNull().default(0),
+  lastActivityAt: timestamp("last_activity_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

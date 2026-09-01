@@ -1,0 +1,473 @@
+Quiero convertir este proyecto en la versión final del bot de ranking competitivo para Free Fire.
+
+IMPORTANTE:
+
+* Mantén intactos el token DISCORD_TOKEN y el sistema actual de conexión.
+* Mantén PostgreSQL como base de datos persistente.
+* No elimines datos existentes.
+* Mantén TypeScript + discord.js.
+* Todo debe quedar modular y preparado para futuras temporadas.
+* El bot debe funcionar principalmente en el canal de Discord destinado al sistema de ranking.
+* Los comandos slash deben poder ejecutarse aunque los usuarios no tengan permiso para enviar mensajes normales en ese canal.
+* Las respuestas de consultas personales deben ser ephemeral/privadas cuando corresponda.
+* No permitas que usuarios normales puedan modificar puntos.
+
+==================================================
+SISTEMA DE JUGADORES
+
+Cada jugador debe tener:
+
+* Discord user ID
+* Nombre/usuario de Discord
+* Puntos actuales
+* Salas jugadas
+* MVP
+* Segundos lugares
+* Terceros lugares
+* Últimos lugares
+* Compe jugadas
+* Guerras jugadas
+* VV2 jugadas
+* Actividades realizadas
+* Puntos obtenidos por actividad
+* Fecha de última actividad
+
+Debe existir un historial completo de cambios.
+
+==================================================
+PUNTOS DE SALA
+
+Cada sala utiliza estas reglas:
+
+* Participación normal: +2 puntos
+* MVP: +10 puntos
+* Segundo lugar: +5 puntos
+* Tercer lugar: +3 puntos
+* Último lugar: +2 puntos
+
+IMPORTANTE:
+Los puntos de posición REEMPLAZAN los +2 de participación.
+NO se suman entre sí.
+
+Ejemplo:
+MVP = 10 puntos totales, NO 12.
+
+==================================================
+/sala
+
+Crear un comando administrativo:
+
+/sala
+
+Debe permitir registrar una sala y sus participantes.
+
+Debe permitir seleccionar:
+
+* Participantes
+* MVP
+* Segundo
+* Tercero
+* Último
+* Nota opcional
+
+Validaciones:
+
+* Un jugador no puede ocupar dos posiciones en la misma sala.
+* MVP, segundo, tercero y último deben pertenecer a los participantes.
+* No registrar dos veces la misma sala.
+* Debe existir al menos un participante.
+* La operación completa debe hacerse en una transacción.
+* Si algo falla, no debe quedar ningún punto parcialmente registrado.
+
+Al registrar:
+
+* Crear la sala.
+* Crear los resultados de cada jugador.
+* Actualizar puntos.
+* Actualizar estadísticas.
+* Crear entradas en el historial.
+* Mostrar un resumen de la sala.
+
+El resumen debe mostrar cuánto recibió cada jugador.
+
+==================================================
+ACTIVIDADES
+
+Crear un sistema general de actividades.
+
+Cada actividad válida otorga:
+
++20 puntos
+
+Tipos iniciales:
+
+* Sala
+* Compe
+* Guerra
+* VV2
+* Honores
+* Juego
+
+Preparar el sistema para agregar nuevos tipos posteriormente.
+
+IMPORTANTE:
+Queremos evitar que un administrador pueda registrar accidentalmente dos veces la misma actividad para el mismo jugador.
+
+==================================================
+/actividad
+
+Crear un comando administrativo para registrar actividad.
+
+Ejemplo conceptual:
+
+/actividad jugador:@usuario tipo:compe nota:Participó en la compe
+
+Debe:
+
+* Dar +20 puntos.
+* Registrar la actividad.
+* Registrar quién la otorgó.
+* Guardar fecha.
+* Guardar motivo/nota.
+* Actualizar estadísticas.
+
+Debe existir validación para evitar duplicados accidentales.
+
+==================================================
+/compe
+
+Crear comando administrativo para registrar una competencia.
+
+Debe registrar:
+
+* Jugadores participantes.
+* Tipo/nombre de competencia.
+* Fecha.
+* Nota opcional.
+
+Cada participante recibe +20 puntos de actividad, salvo que posteriormente definamos un sistema de rendimiento específico para competencias.
+
+Registrar todo en historial.
+
+==================================================
+/guerra
+
+Crear comando administrativo para registrar una guerra.
+
+Debe permitir:
+
+* Seleccionar participantes.
+* Nombre/identificador de la guerra.
+* Fecha.
+* Nota.
+
+Cada participante recibe +20 puntos de actividad.
+
+==================================================
+/vv2
+
+Crear comando administrativo para registrar VV2.
+
+Debe permitir:
+
+* Seleccionar participantes.
+* Resultado/nota opcional.
+* Fecha.
+
+Cada participante recibe +20 puntos de actividad.
+
+==================================================
+/honor
+
+Crear comando administrativo para otorgar actividad por honores.
+
+Debe permitir seleccionar uno o varios jugadores y otorgar +20 puntos por actividad válida.
+
+Registrar quién lo otorgó y el motivo.
+
+==================================================
+/juego
+
+Crear comando administrativo para registrar actividad general dentro del juego.
+
+Cada actividad válida:
++20 puntos.
+
+Debe guardar motivo y administrador.
+
+==================================================
+RANKING
+
+Crear:
+
+/ranking
+
+Debe mostrar:
+
+* Posición
+* Jugador
+* Puntos
+
+Ordenado de mayor a menor.
+
+Preparar paginación para que funcione aunque haya muchos jugadores.
+
+Crear también filtros si es sencillo:
+
+/ranking tipo:general
+
+Y dejar preparada la estructura para futuras temporadas.
+
+La consulta pública del ranking puede ser visible para todos.
+
+==================================================
+/perfil
+
+Crear:
+
+/perfil jugador:@usuario
+
+Debe mostrar:
+
+* Puntos actuales
+* Posición en el ranking
+* Salas jugadas
+* MVP
+* Segundo lugar
+* Tercer lugar
+* Último lugar
+* Compes
+* Guerras
+* VV2
+* Actividades
+* Puntos por actividad
+* Última actividad
+
+Debe incluir historial reciente.
+
+La respuesta debe ser ephemeral/privada para quien ejecuta el comando.
+
+==================================================
+/historial
+
+Crear:
+
+/historial jugador:@usuario
+
+Mostrar los últimos movimientos de puntos:
+
+* Fecha
+* Cantidad
+* Motivo
+* Tipo
+* Administrador responsable
+
+La respuesta debe ser privada para el usuario que consulta.
+
+Los administradores deben poder consultar cualquier jugador.
+
+==================================================
+/puntos
+
+Crear un comando administrativo:
+
+/puntos jugador:@usuario cantidad:<número> motivo:
+
+Permitir sumar o restar puntos manualmente.
+
+Ejemplo:
++10
+-5
+
+Todo cambio manual debe quedar registrado en el historial con:
+
+* jugador
+* cantidad
+* motivo
+* administrador
+* fecha
+
+==================================================
+/reset
+
+NO borrar datos permanentemente.
+
+Crear un sistema de temporadas.
+
+Preparar:
+
+/temporada crear nombre:
+
+/temporada cerrar
+
+/temporada actual
+
+Al cerrar una temporada:
+
+* conservar estadísticas históricas
+* conservar historial
+* iniciar nueva clasificación
+* los puntos de la nueva temporada comienzan en 0
+
+No eliminar datos anteriores.
+
+==================================================
+/ayuda
+
+Crear un comando:
+
+/ayuda
+
+Debe mostrar todos los comandos disponibles divididos por categorías:
+
+CONSULTAS:
+
+* /ranking
+* /perfil
+* /historial
+* /ayuda
+
+ADMINISTRACIÓN:
+
+* /sala
+* /actividad
+* /compe
+* /guerra
+* /vv2
+* /honor
+* /juego
+* /puntos
+* /temporada
+
+Explicar brevemente qué hace cada uno.
+
+Los comandos administrativos solo deben aparecer/funcionar para administradores o para el rol configurado mediante RANKING_ADMIN_ROLE_ID.
+
+==================================================
+PERMISOS
+
+Mantener el sistema actual:
+
+Administradores de Discord:
+
+* pueden administrar el ranking.
+
+También permitir un rol configurable:
+
+RANKING_ADMIN_ROLE_ID
+
+Si la variable no existe:
+
+* solo administradores de Discord pueden administrar.
+
+Usuarios normales:
+
+* pueden consultar ranking, perfil, historial propio y ayuda.
+* NO pueden modificar puntos.
+* NO pueden registrar salas.
+* NO pueden registrar actividades.
+
+==================================================
+CANAL DEL SISTEMA
+
+Preparar una variable:
+
+RANKING_CHANNEL_ID
+
+Si está configurada:
+
+* Los comandos del sistema deben funcionar en ese canal.
+* Si alguien intenta usar un comando del ranking en otro canal, responder con un mensaje indicando que debe utilizar el canal oficial.
+
+IMPORTANTE:
+No bloquear los slash commands por el permiso “Enviar mensajes”.
+Los usuarios deben poder ejecutar comandos aunque no puedan enviar mensajes normales.
+
+==================================================
+RESPUESTAS Y DISEÑO
+
+Quiero respuestas bonitas y fáciles de leer usando embeds.
+
+Usar emojis relacionados con Free Fire/ranking.
+
+Ejemplo de sala:
+
+🎮 SALA REGISTRADA #001
+
+👑 MVP
+Jugador — +10
+
+🥈 Segundo
+Jugador — +5
+
+🥉 Tercero
+Jugador — +3
+
+🎮 Participantes
+Jugador — +2
+
+━━━━━━━━━━━━
+🏆 Puntos repartidos: XX
+
+Ejemplo ranking:
+
+🏆 RANKING GENERAL
+
+🥇 Jugador — 150 pts
+🥈 Jugador — 132 pts
+🥉 Jugador — 118 pts
+
+━━━━━━━━━━━━
+👥 Jugadores: XX
+📅 Temporada: XXXX
+
+==================================================
+SEGURIDAD
+
+* Nunca mostrar DISCORD_TOKEN.
+* No guardar tokens en código.
+* Usar DISCORD_TOKEN desde Secrets.
+* Validar todos los comandos.
+* Manejar errores correctamente.
+* Evitar duplicación de registros.
+* Usar transacciones para operaciones de puntos.
+* Registrar auditoría de todos los cambios.
+
+==================================================
+BASE DE DATOS
+
+Mantener las tablas existentes si son compatibles.
+
+Si hace falta modificar el esquema:
+
+* hacer migraciones seguras.
+* no eliminar datos existentes.
+* crear índices para búsquedas de ranking e historial.
+* usar relaciones apropiadas.
+
+==================================================
+REGISTRO DE COMANDOS
+
+Registrar automáticamente todos los slash commands.
+
+Mantener el sistema actual de registro automático.
+
+Verificar que todos los comandos aparecen correctamente en Discord.
+
+==================================================
+FINALIZACIÓN
+
+Cuando termines:
+
+1. Compilar TypeScript.
+2. Corregir todos los errores.
+3. Ejecutar pruebas.
+4. Reiniciar el bot.
+5. Confirmar que conecta a Discord.
+6. Confirmar que los comandos se registran.
+7. Confirmar que PostgreSQL funciona.
+8. Confirmar que las operaciones de puntos son transaccionales.
+9. No tocar ni revelar DISCORD_TOKEN.
+10. Darme un resumen de todos los comandos implementados y cualquier variable de entorno que todavía necesite configurar.
+
+Quiero que esta sea la versión base FINAL y modular del bot, no una demostración.

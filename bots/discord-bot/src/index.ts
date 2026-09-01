@@ -4,7 +4,7 @@ import {
   GatewayIntentBits,
 } from "discord.js";
 import { commandDefinitions } from "./commands.js";
-import { handleCommand } from "./command-handler.js";
+import { handleCommand, UserFacingError } from "./command-handler.js";
 import { config } from "./config.js";
 import { logger } from "./logger.js";
 
@@ -50,7 +50,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
     });
 
     const reply = {
-      content: "Ocurrió un error al procesar el comando.",
+      content:
+        error instanceof UserFacingError
+          ? `❌ ${error.message}`
+          : "Ocurrió un error al procesar el comando.",
       ephemeral: true,
     };
 

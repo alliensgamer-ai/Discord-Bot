@@ -13,4 +13,5 @@ export const config = {
   clientId: process.env.DISCORD_CLIENT_ID?.trim(),
   guildId: process.env.DISCORD_GUILD_ID?.trim(),
   rankingAdminRoleId: process.env.RANKING_ADMIN_ROLE_ID?.trim(),
+  rankingChannelId: process.env.RANKING_CHANNEL_ID?.trim(),
 };
