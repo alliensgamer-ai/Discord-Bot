@@ -28,10 +28,9 @@ import {
 } from "./ranking-service.js";
 import { placementLabels, type SalaPlacement } from "./ranking-rules.js";
 import {
-  createExportArchive,
   EXPORT_ARCHIVE_NAME,
+  getExportArchive,
   MAX_DISCORD_ATTACHMENT_BYTES,
-  removeExportArchive,
 } from "./export-download.js";
 
 const rankingCommands = new Set([
@@ -71,9 +70,9 @@ export async function handleCommand(
     case "ayuda":
       await replyHelp(interaction);
       return;
-      case "descargar":
-        await handleDownload(interaction);
-        return;
+    case "descargar":
+      await handleDownload(interaction);
+      return;
     case "echo":
       await interaction.reply(interaction.options.getString("mensaje", true));
       return;
@@ -513,20 +512,14 @@ async function handleDownload(interaction: ChatInputCommandInteraction) {
     return;
   }
 
-  if (!hasConfiguredRankingAdminRole(interaction)) {
-    await interaction.reply({
-      content:
-        "Solo el rol administrativo configurado puede usar este comando.",
-      ephemeral: true,
-    });
+  if (!(await requireRankingAdmin(interaction))) {
     return;
   }
 
   await interaction.deferReply({ ephemeral: true });
 
-  let archive: Awaited<ReturnType<typeof createExportArchive>> | undefined;
   try {
-    archive = await createExportArchive();
+    const archive = await getExportArchive();
 
     if (archive.size > MAX_DISCORD_ATTACHMENT_BYTES) {
       await interaction.editReply(
@@ -550,10 +543,6 @@ async function handleDownload(interaction: ChatInputCommandInteraction) {
           ? `❌ No se pudo preparar la exportación: ${error.message}`
           : "❌ No se pudo preparar la exportación.",
     });
-  } finally {
-    if (archive) {
-      await removeExportArchive(archive);
-    }
   }
 }
 
@@ -578,22 +567,6 @@ function isRankingAdmin(interaction: ChatInputCommandInteraction) {
   if (!("roles" in interaction.member)) {
     return false;
   }
-  const roles = interaction.member.roles;
-  return Array.isArray(roles)
-    ? roles.includes(config.rankingAdminRoleId)
-    : roles.cache.has(config.rankingAdminRoleId);
-}
-
-function hasConfiguredRankingAdminRole(
-  interaction: ChatInputCommandInteraction,
-) {
-  if (!config.rankingAdminRoleId || !interaction.member) {
-    return false;
-  }
-  if (!("roles" in interaction.member)) {
-    return false;
-  }
-
   const roles = interaction.member.roles;
   return Array.isArray(roles)
     ? roles.includes(config.rankingAdminRoleId)
