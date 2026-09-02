@@ -27,6 +27,9 @@ export const commandDefinitions = [
     .setName("ayuda")
     .setDescription("Muestra todos los comandos del ranking."),
   new SlashCommandBuilder()
+    .setName("descargar")
+    .setDescription("Envía la exportación de producción al administrador."),
+  new SlashCommandBuilder()
     .setName("echo")
     .setDescription("Repite un mensaje.")
     .addStringOption((option) =>
@@ -228,5 +231,6 @@ export const commandHelp = {
     ["/puntos", "Suma o resta puntos manualmente."],
     ["/temporada", "Crea, cierra o consulta temporadas."],
     ["/reset", "Reinicia la clasificación sin borrar datos."],
+    ["/descargar", "Envía la exportación de producción al administrador autorizado."],
   ],
 } as const;

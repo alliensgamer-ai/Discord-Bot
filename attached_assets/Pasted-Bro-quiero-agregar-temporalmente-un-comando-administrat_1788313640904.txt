@@ -1,0 +1,44 @@
+Bro, quiero agregar temporalmente un comando administrativo /descargar para poder descargar la exportación de Puzzles Bot directamente desde Discord y subirla posteriormente a Wispbyte.
+
+IMPORTANTE:
+
+* No modifiques ni elimines ninguna funcionalidad existente.
+* No cambies PostgreSQL.
+* No cambies DISCORD_TOKEN.
+* No cambies el sistema de comandos existente.
+* No cambies permisos existentes.
+* El comando debe ser SOLO para el rol configurado en RANKING_ADMIN_ROLE_ID.
+* Debe ser una herramienta temporal de exportación administrativa.
+
+Funcionamiento:
+
+1. Cuando un administrador autorizado use /descargar, el bot debe tomar exactamente esta carpeta:
+
+/home/runner/workspace/puzzles-bot-wispbyte-export/
+
+2. Debe generar un ZIP temporal llamado:
+
+puzzles-bot-wispbyte-export.zip
+
+3. El ZIP debe incluir todos los archivos de la exportación preparada por Replit, manteniendo su estructura.
+4. NUNCA debe incluir:
+
+* .env
+* secretos reales
+* DISCORD_TOKEN
+* DATABASE_URL
+* node_modules
+* dist
+* archivos temporales
+* credenciales
+* logs que puedan contener secretos
+
+5. Antes de enviarlo, comprueba el tamaño del ZIP para evitar superar el límite de archivos adjuntos de Discord.
+6. Si el archivo cabe dentro del límite permitido, envíalo como archivo adjunto en la respuesta del comando.
+7. Si supera el límite, NO intentes enviarlo. Responde indicando que la exportación supera el límite de Discord y muestra el tamaño del archivo.
+8. Después de enviarlo correctamente, elimina solamente el ZIP temporal generado. NO elimines ni modifiques la carpeta original puzzles-bot-wispbyte-export/.
+9. El comando debe responder de forma privada (ephemeral) para que solamente el administrador que lo ejecutó pueda ver el archivo/respuesta.
+10. Añade validaciones de seguridad para impedir que /descargar pueda leer archivos fuera de puzzles-bot-wispbyte-export/.
+11. Ejecuta una comprobación/build al terminar para asegurarte de que no rompiste ningún comando ni funcionalidad existente.
+
+Cuando termines, dime exactamente qué archivos modificaste y si el build pasó correctamente.

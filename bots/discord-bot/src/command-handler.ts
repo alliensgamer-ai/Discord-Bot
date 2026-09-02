@@ -1,4 +1,5 @@
 import {
+  AttachmentBuilder,
   EmbedBuilder,
   PermissionFlagsBits,
   type ChatInputCommandInteraction,
@@ -26,6 +27,12 @@ import {
   type SalaPlayerInput,
 } from "./ranking-service.js";
 import { placementLabels, type SalaPlacement } from "./ranking-rules.js";
+import {
+  createExportArchive,
+  EXPORT_ARCHIVE_NAME,
+  MAX_DISCORD_ATTACHMENT_BYTES,
+  removeExportArchive,
+} from "./export-download.js";
 
 const rankingCommands = new Set([
   "sala",
@@ -64,6 +71,9 @@ export async function handleCommand(
     case "ayuda":
       await replyHelp(interaction);
       return;
+      case "descargar":
+        await handleDownload(interaction);
+        return;
     case "echo":
       await interaction.reply(interaction.options.getString("mensaje", true));
       return;
@@ -494,6 +504,59 @@ async function handleReset(interaction: ChatInputCommandInteraction) {
   });
 }
 
+async function handleDownload(interaction: ChatInputCommandInteraction) {
+  if (!interaction.guild) {
+    await interaction.reply({
+      content: "Este comando solo funciona dentro de un servidor.",
+      ephemeral: true,
+    });
+    return;
+  }
+
+  if (!hasConfiguredRankingAdminRole(interaction)) {
+    await interaction.reply({
+      content:
+        "Solo el rol administrativo configurado puede usar este comando.",
+      ephemeral: true,
+    });
+    return;
+  }
+
+  await interaction.deferReply({ ephemeral: true });
+
+  let archive: Awaited<ReturnType<typeof createExportArchive>> | undefined;
+  try {
+    archive = await createExportArchive();
+
+    if (archive.size > MAX_DISCORD_ATTACHMENT_BYTES) {
+      await interaction.editReply(
+        `❌ La exportación supera el límite conservador de Discord de ${formatBytes(MAX_DISCORD_ATTACHMENT_BYTES)}. Tamaño generado: **${formatBytes(archive.size)}**. No se envió ningún archivo.`,
+      );
+      return;
+    }
+
+    await interaction.editReply({
+      content: `✅ Exportación preparada: **${formatBytes(archive.size)}**.`,
+      files: [
+        new AttachmentBuilder(archive.path, {
+          name: EXPORT_ARCHIVE_NAME,
+        }),
+      ],
+    });
+  } catch (error) {
+    await interaction.editReply({
+      content:
+        error instanceof Error
+          ? `❌ No se pudo preparar la exportación: ${error.message}`
+          : "❌ No se pudo preparar la exportación.",
+    });
+  } finally {
+    if (archive) {
+      await removeExportArchive(archive);
+    }
+  }
+}
+
 async function requireRankingAdmin(interaction: ChatInputCommandInteraction) {
   if (isRankingAdmin(interaction)) {
     return true;
@@ -515,6 +578,22 @@ function isRankingAdmin(interaction: ChatInputCommandInteraction) {
   if (!("roles" in interaction.member)) {
     return false;
   }
+  const roles = interaction.member.roles;
+  return Array.isArray(roles)
+    ? roles.includes(config.rankingAdminRoleId)
+    : roles.cache.has(config.rankingAdminRoleId);
+}
+
+function hasConfiguredRankingAdminRole(
+  interaction: ChatInputCommandInteraction,
+) {
+  if (!config.rankingAdminRoleId || !interaction.member) {
+    return false;
+  }
+  if (!("roles" in interaction.member)) {
+    return false;
+  }
+
   const roles = interaction.member.roles;
   return Array.isArray(roles)
     ? roles.includes(config.rankingAdminRoleId)
@@ -620,6 +699,16 @@ function rankIcon(position: number) {
 
 function signedPoints(amount: number) {
   return `${amount >= 0 ? "+" : ""}${amount} pts`;
+}
+
+function formatBytes(bytes: number) {
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(2)} KB`;
+  }
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 function displayName(user: User) {
