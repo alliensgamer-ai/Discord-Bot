@@ -28,3 +28,17 @@ mtime_ms = 1788310315389
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:9bd16d20-dcad-48f8-9efe-87910b43b9cf/0727a396-2255-4e54-98a4-2640f4489cc1/61996af0-efb2-4cd3-989e-02524183b66b"
 storage_version_token = "1788310963417976"
 content_type = "application/octet-stream"
+
+[[outputs]]
+id = "aGAue7q20nE2_qlX2104R"
+uri = "file://puzzles-bot-wispbyte.zip"
+type = "unspecified"
+title = "puzzles-bot-wispbyte.zip"
+description = "Exportación completa de puzzles-bot-wispbyte-export, sin node_modules, .env reales ni credenciales."
+logical_id = "170e23ee-c428-4340-a925-38eee6b82da8"
+content_hash = "sha256:a08d0e962b4d78429d989c75c8e2b0158aa0cd8ffe79c4c2c128bc3269eb321a"
+size = 28142
+mtime_ms = 1788317622716
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:f2d295cf-658a-46e8-abac-d6c25fc1d9c8/170e23ee-c428-4340-a925-38eee6b82da8/64f11147-1720-4a97-8c5b-ab5e33a0180c"
+storage_version_token = "1788317627337570"
+content_type = "application/octet-stream"
