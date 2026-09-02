@@ -1,5 +1,4 @@
 import {
-  AttachmentBuilder,
   EmbedBuilder,
   PermissionFlagsBits,
   type ChatInputCommandInteraction,
@@ -27,11 +26,6 @@ import {
   type SalaPlayerInput,
 } from "./ranking-service.js";
 import { placementLabels, type SalaPlacement } from "./ranking-rules.js";
-import {
-  getExportFiles,
-  MAX_DISCORD_ATTACHMENT_BYTES,
-  MAX_DISCORD_ATTACHMENTS,
-} from "./export-download.js";
 
 const rankingCommands = new Set([
   "sala",
@@ -69,9 +63,6 @@ export async function handleCommand(
     case "help":
     case "ayuda":
       await replyHelp(interaction);
-      return;
-    case "descargar":
-      await handleDownload(interaction);
       return;
     case "echo":
       await interaction.reply(interaction.options.getString("mensaje", true));
@@ -503,74 +494,6 @@ async function handleReset(interaction: ChatInputCommandInteraction) {
   });
 }
 
-async function handleDownload(interaction: ChatInputCommandInteraction) {
-  if (!interaction.guild) {
-    await interaction.reply({
-      content: "Este comando solo funciona dentro de un servidor.",
-      ephemeral: true,
-    });
-    return;
-  }
-
-  if (!(await requireRankingAdmin(interaction))) {
-    return;
-  }
-
-  await interaction.deferReply({ ephemeral: true });
-
-  let sentFirstBatch = false;
-  try {
-    const files = await getExportFiles();
-    const oversizedFile = files.find(
-      (file) => file.size > MAX_DISCORD_ATTACHMENT_BYTES,
-    );
-    if (oversizedFile) {
-      await interaction.editReply(
-        `❌ El archivo **${oversizedFile.name}** supera el límite conservador de Discord de ${formatBytes(MAX_DISCORD_ATTACHMENT_BYTES)}. Tamaño: **${formatBytes(oversizedFile.size)}**. No se envió ningún archivo.`,
-      );
-      return;
-    }
-
-    const batches = chunkFiles(files, MAX_DISCORD_ATTACHMENTS);
-    for (const [index, batch] of batches.entries()) {
-      const payload = {
-        content: `✅ Archivos ${index + 1}/${batches.length} de la exportación:\n${batch.map((file) => `• \`${file.name}\``).join("\n")}`,
-        files: batch.map(
-          (file) =>
-            new AttachmentBuilder(file.path, {
-              name: file.name,
-            }),
-        ),
-      };
-
-      if (index === 0) {
-        await interaction.editReply(payload);
-        sentFirstBatch = true;
-      } else {
-        await interaction.followUp({ ...payload, ephemeral: true });
-      }
-    }
-  } catch (error) {
-    const content =
-      error instanceof Error
-        ? `❌ No se pudo preparar la exportación: ${error.message}`
-        : "❌ No se pudo preparar la exportación.";
-    if (sentFirstBatch) {
-      await interaction.followUp({ content, ephemeral: true });
-    } else {
-      await interaction.editReply({ content });
-    }
-  }
-}
-
-function chunkFiles<T>(files: T[], chunkSize: number) {
-  const batches: T[][] = [];
-  for (let index = 0; index < files.length; index += chunkSize) {
-    batches.push(files.slice(index, index + chunkSize));
-  }
-  return batches;
-}
-
 async function requireRankingAdmin(interaction: ChatInputCommandInteraction) {
   if (isRankingAdmin(interaction)) {
     return true;
@@ -697,16 +620,6 @@ function rankIcon(position: number) {
 
 function signedPoints(amount: number) {
   return `${amount >= 0 ? "+" : ""}${amount} pts`;
-}
-
-function formatBytes(bytes: number) {
-  if (bytes < 1024) {
-    return `${bytes} B`;
-  }
-  if (bytes < 1024 * 1024) {
-    return `${(bytes / 1024).toFixed(2)} KB`;
-  }
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 function displayName(user: User) {
