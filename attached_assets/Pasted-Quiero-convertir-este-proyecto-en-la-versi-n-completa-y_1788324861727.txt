@@ -1,0 +1,494 @@
+Quiero convertir este proyecto en la versión completa y profesional de Puzzles Bot, manteniendo TODO lo que ya funciona actualmente.
+
+REGLA PRINCIPAL — NO ROMPER LO EXISTENTE
+
+Antes de modificar cualquier cosa:
+
+1. Analiza completamente el repositorio actual.
+2. Identifica la arquitectura, comandos, servicios, base de datos, esquemas, permisos y workflows existentes.
+3. NO rehagas el bot desde cero.
+4. NO elimines ni reemplaces funcionalidades existentes que ya funcionan.
+5. Conserva la lógica actual de puntos, temporadas, XP, niveles, logros, rankings, guerras, actividades y permisos.
+6. No cambies valores de configuración existentes sin una razón técnica.
+7. No elimines datos de PostgreSQL.
+8. No cambies ni expongas secretos.
+9. Todos los cambios deben ser compatibles con el despliegue actual en Wispbyte.
+10. Si una funcionalidad ya existe, mejórala en lugar de duplicarla.
+
+1. DISCORD GATEWAY / ESTADO DEL BOT
+
+Implementa un sistema sólido de conexión al Discord Gateway.
+
+Cuando el proceso inicie debe mostrar en consola/logs información clara como:
+
+* Iniciando Puzzles Bot…
+* Cargando configuración…
+* Conectando a PostgreSQL…
+* PostgreSQL conectado correctamente.
+* Inicializando Discord Gateway…
+* Autenticando bot…
+* Bot conectado correctamente.
+* Nombre del bot.
+* ID del bot.
+* Cantidad de servidores conectados.
+* Cantidad de usuarios/cache si está disponible.
+* Comandos registrados correctamente.
+* Puzzles Bot está ONLINE y listo.
+
+Cuando el bot se desconecte:
+
+* Registrar motivo.
+* Registrar código de desconexión si Discord lo proporciona.
+* Indicar si Discord.js intentará reconectar.
+* No terminar el proceso innecesariamente.
+
+Cuando se reconecte:
+
+* Registrar que la conexión fue restaurada.
+* Mostrar nuevamente el estado ONLINE.
+
+Implementa manejo correcto de:
+
+* ready
+* shardReady si aplica
+* disconnect
+* error
+* warn
+* invalidated
+* rate limits
+* reconnect/reconnect attempts
+
+No inventes eventos que Discord.js no soporte.
+
+El bot debe manejar errores sin apagarse por errores recuperables.
+
+2. HEALTH CHECK
+
+Crear un sistema interno de diagnóstico que compruebe:
+
+* Discord Gateway.
+* Estado del cliente Discord.
+* PostgreSQL.
+* Conexión a la base de datos.
+* Registro de comandos.
+* Estado general del proceso.
+
+Crear un comando administrativo:
+
+/diagnostico
+
+Debe mostrar de manera profesional:
+
+* Discord: ONLINE/OFFLINE
+* Database: ONLINE/OFFLINE
+* Bot: ONLINE
+* Latencia.
+* Uptime.
+* Servidores.
+* Versión de Node.js.
+* Versión de discord.js.
+* Estado de comandos.
+
+No mostrar tokens, passwords, DATABASE_URL ni secretos.
+
+3. SISTEMA DE PERMISOS
+
+Centralizar y mejorar los permisos.
+
+Mantener el rol administrativo existente:
+
+RANKING_ADMIN_ROLE_ID=1544270354208526346
+
+Los comandos administrativos deben comprobar correctamente los permisos.
+
+Evitar que usuarios normales puedan ejecutar comandos administrativos.
+
+Registrar en logs:
+
+* Usuario.
+* ID.
+* Comando.
+* Acción realizada.
+* Fecha/hora.
+* Resultado.
+
+4. LOGS
+
+Crear un sistema de logs consistente.
+
+Separar:
+
+* Logs normales.
+* Logs de moderación.
+* Logs administrativos.
+* Logs técnicos.
+* Errores.
+* Eventos de Gateway.
+
+Cuando sea posible, enviar información al canal correspondiente sin saturarlo.
+
+Mantener también logs en consola para Wispbyte.
+
+Nunca registrar secretos.
+
+5. RANKING
+
+Conservar y mejorar completamente el sistema existente.
+
+Reglas actuales:
+
+Participación: +2
+MVP: +10
+Segundo: +5
+Tercero: +3
+Último: +2
+
+Las posiciones especiales reemplazan la participación normal y NO se acumulan con ella.
+
+Actividades:
+
+/actividad
+/compe
+/guerra
+/vv2
+/juego
+
+Cada actividad válida y única otorga +20.
+
+Evitar duplicados mediante una identificación única de actividad.
+
+Mejorar:
+
+/ranking
+/perfil
+
+Agregar:
+
+* Ranking de temporada.
+* Ranking histórico.
+* Puntos actuales.
+* XP.
+* Nivel.
+* Logros.
+* Medallas.
+* Récords.
+* Estadísticas de guerras.
+* Historial de puntos.
+
+6. HISTORIAL
+
+Crear historial completo de:
+
+* Puntos.
+* Actividades.
+* Guerras.
+* MVP.
+* Posiciones.
+* Temporadas.
+* Recompensas.
+* Cambios administrativos.
+
+Los administradores deben poder consultar información histórica sin modificarla accidentalmente.
+
+7. TEMPORADAS
+
+Mantener el sistema semanal de temporadas.
+
+Al finalizar una temporada:
+
+* Guardar resultados.
+* Determinar campeón.
+* Guardar top jugadores.
+* Crear resumen.
+* Reiniciar solamente los puntos correspondientes a la nueva temporada.
+
+NO reiniciar:
+
+* XP.
+* Nivel.
+* Logros.
+* Medallas.
+* Récords.
+* Historial.
+
+Agregar comandos administrativos para consultar temporadas anteriores.
+
+8. GUERRAS
+
+Los días de guerra son:
+
+* Jueves.
+* Viernes.
+* Sábado.
+
+Mejorar /guerra para registrar correctamente:
+
+* Jugador.
+* Fecha.
+* Resultado.
+* Posición.
+* Puntos.
+* Temporada.
+
+Permitir consultar estadísticas históricas por jugador y temporada.
+
+9. RECOMPENSAS
+
+Crear sistema de recompensas.
+
+Debe soportar:
+
+* Recompensas de temporada.
+* Medallas.
+* Logros.
+* Reconocimientos.
+* Historial de recompensas.
+
+Al cerrar una temporada, preparar automáticamente las recompensas correspondientes según el ranking.
+
+No entregar recompensas dos veces.
+
+10. XP / NIVELES / LOGROS
+
+Mantener el sistema existente y mejorarlo.
+
+XP y niveles deben persistir entre temporadas.
+
+Implementar correctamente:
+
+* Progreso de XP.
+* Nivel.
+* Logros desbloqueados.
+* Medallas.
+* Récords.
+
+Evitar otorgar dos veces el mismo logro por el mismo evento.
+
+11. MODERACIÓN
+
+Crear/mejorar sistema de moderación.
+
+Incluir, según las capacidades actuales del bot:
+
+* Warn.
+* Mute/timeout.
+* Kick.
+* Ban.
+* Unban.
+* Historial de sanciones.
+* Logs de moderación.
+
+Todo debe estar protegido por permisos.
+
+Registrar quién ejecutó cada acción.
+
+12. CANALES
+
+Mantener la organización del servidor.
+
+Canales objetivo:
+
+#bot
+#ranking
+#resultados
+#recompensas
+#logs
+#moderacion
+#bot-logs
+
+El bot debe intentar enviar cada tipo de información al canal apropiado.
+
+No llenar #chat-general con mensajes automáticos.
+
+Si un canal no existe, manejarlo de forma segura y registrar el problema sin apagar el bot.
+
+13. EMBEDS Y EXPERIENCIA
+
+Mejorar la presentación de los comandos con embeds profesionales.
+
+Usar:
+
+* Títulos claros.
+* Campos organizados.
+* Footer.
+* Timestamp cuando corresponda.
+* Botones donde realmente aporten utilidad.
+* Menús desplegables cuando sean mejores que comandos separados.
+
+Los mensajes de error deben explicar claramente qué ocurrió.
+
+14. AUTOMATIZACIÓN
+
+Implementar tareas programadas para:
+
+* Cierre de temporadas.
+* Inicio de nuevas temporadas.
+* Resúmenes.
+* Avisos.
+* Recordatorios.
+* Procesos de mantenimiento.
+
+Las tareas deben ser idempotentes.
+
+Si el bot se reinicia, no debe ejecutar dos veces una misma tarea.
+
+Usar PostgreSQL o un mecanismo persistente cuando sea necesario para recordar qué tareas ya fueron ejecutadas.
+
+15. AUTO-RECUPERACIÓN
+
+Implementar recuperación segura ante errores recuperables.
+
+Ejemplos:
+
+* Reconexión de Discord.
+* Reintentos de PostgreSQL.
+* Reintentos controlados ante errores temporales.
+* Manejo de rate limits.
+
+No crear loops infinitos.
+
+Usar backoff cuando corresponda.
+
+16. COMANDO /BOT
+
+Crear o mejorar:
+
+/bot
+
+Debe mostrar:
+
+* Nombre: Puzzles Bot
+* Versión.
+* Estado ONLINE.
+* Uptime.
+* Servidores.
+* Ping.
+* Información general.
+* Información del sistema cuando sea apropiado.
+
+No mostrar información sensible.
+
+17. COMANDO /AYUDA
+
+Crear/mejorar un sistema de ayuda organizado por categorías:
+
+* Ranking.
+* Jugadores.
+* Actividades.
+* Guerras.
+* Temporadas.
+* Recompensas.
+* Moderación.
+* Administración.
+
+Los comandos administrativos solamente deben aparecer o ser explicados para usuarios autorizados cuando sea apropiado.
+
+18. BASE DE DATOS
+
+Revisar los esquemas actuales de PostgreSQL.
+
+Agregar tablas/campos solamente cuando sean necesarios.
+
+Usar migraciones seguras.
+
+NO borrar tablas existentes.
+
+NO borrar datos.
+
+Agregar índices y restricciones únicas donde ayuden a evitar duplicados.
+
+Especialmente proteger:
+
+* Actividades duplicadas.
+* Recompensas duplicadas.
+* Logros duplicados.
+* Cierres de temporada duplicados.
+* Eventos procesados dos veces.
+
+19. CONFIGURACIÓN
+
+Mantener las variables de entorno actuales.
+
+Como mínimo, respetar:
+
+DISCORD_TOKEN
+DATABASE_URL
+RANKING_ADMIN_ROLE_ID
+
+Si el código actual utiliza otras variables, conservarlas.
+
+No poner valores reales de secretos dentro del código.
+
+Actualizar .env.example solamente con nombres de variables y ejemplos seguros.
+
+20. PRODUCCIÓN / WISPBYTE
+
+El proyecto debe continuar siendo compatible con el despliegue actual.
+
+El bot actualmente se ejecuta en Wispbyte desde:
+
+puzzles-bot-wispbyte-export
+
+y el proceso de producción termina ejecutando:
+
+node dist/index.mjs
+
+No cambiar esta estructura sin comprobar primero que el nuevo build sigue generando:
+
+dist/index.mjs
+
+El proceso debe poder reiniciarse correctamente.
+
+No depender de rutas específicas de mi ordenador/Replit.
+
+21. CALIDAD DEL CÓDIGO
+
+Después de implementar todo:
+
+* Ejecutar typecheck.
+* Ejecutar build.
+* Corregir errores de TypeScript.
+* Corregir imports.
+* Comprobar comandos.
+* Comprobar que no haya duplicados.
+* Comprobar que no haya secretos hardcodeados.
+* Comprobar que el build genere dist/index.mjs.
+* Revisar errores de runtime potenciales.
+
+No modificar el workflow existente del bot de Discord salvo que sea estrictamente necesario.
+
+NO iniciar otros workflows innecesariamente.
+
+22. INFORME FINAL
+
+Cuando termines, NO digas simplemente “listo”.
+
+Dame un resumen con:
+
+1. Funcionalidades agregadas.
+2. Funcionalidades existentes que fueron mejoradas.
+3. Archivos modificados.
+4. Tablas/migraciones agregadas.
+5. Nuevos comandos.
+6. Variables de entorno nuevas, indicando SOLO sus nombres.
+7. Resultado del typecheck.
+8. Resultado del build.
+9. Confirmación de que dist/index.mjs existe.
+10. Cualquier cosa que todavía necesite configuración manual.
+
+IMPORTANTE:
+
+Trabaja de forma incremental dentro del proyecto actual.
+
+Primero analiza.
+Después implementa.
+Después verifica.
+Finalmente ejecuta typecheck y build.
+
+No borres funcionalidades existentes.
+No borres datos.
+No expongas secretos.
+No inventes configuraciones.
+No cambies las reglas actuales del ranking.
+No cambies el rol administrativo existente.
+No rompas el despliegue actual de Wispbyte.
