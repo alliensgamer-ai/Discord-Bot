@@ -1,0 +1,46 @@
+Hay una inconsistencia que necesito que investigues antes de que hagamos cualquier otro cambio.
+
+La cuenta actual está en el plan Free/Starter de Replit.
+
+Según la documentación actual de Replit, el plan Starter incluye:
+
+* 1 free published app
+* Publish 1 live project
+
+Sin embargo, en la pantalla Publishing de Puzzles Bot aparece:
+
+“+ Upgrade your plan to publish”
+
+No quiero asumir automáticamente que necesitamos pagar.
+
+Investiga la configuración ACTUAL de esta cuenta y de este proyecto para determinar exactamente por qué la publicación gratuita no está disponible.
+
+Comprueba específicamente:
+
+1. Si esta cuenta ya utilizó su única publicación gratuita en otro proyecto.
+2. Si existe algún deployment previo, incluso eliminado, que esté consumiendo el cupo.
+3. Si el artifact nuevo de Puzzles Bot está configurado con un tipo de deployment que requiere upgrade.
+4. Si Reserved VM / VM está disponible dentro de la publicación gratuita o requiere un plan/creditos diferente.
+5. Si Publishing está intentando cobrar por una configuración específica.
+6. Si el proyecto/artifact necesita alguna configuración adicional para usar la publicación gratuita.
+7. Si la cuenta requiere añadir método de pago aunque tenga una publicación gratuita.
+8. Si existe una opción de deployment gratuita diferente compatible con el plan actual.
+
+IMPORTANTE:
+
+No cambies todavía el código del bot.
+
+No cambies DISCORD_TOKEN, PostgreSQL ni ningún comando.
+
+Primero haz una investigación de solo lectura sobre la cuenta, el proyecto, el artifact y las opciones de Publishing.
+
+Quiero una respuesta exacta basada en la configuración real:
+
+* ¿La cuenta todavía tiene disponible su publicación gratuita?
+* Si sí, ¿por qué aparece Upgrade?
+* ¿Qué tipo de deployment está bloqueado?
+* ¿Qué tipo de deployment permite el plan Free?
+* ¿Puede ese deployment mantener un bot de Discord 24/7?
+* ¿Qué paso exacto debemos hacer para publicar sin pagar, si es posible?
+
+No quiero suposiciones. Comprueba la configuración real antes de recomendar un upgrade.
