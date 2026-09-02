@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Puzzles Bot"
+description = "Aplicación de producción para ejecutar de forma persistente el bot competitivo de Free Fire para Discord."
+version = "1.0.0"
+id = "artifacts/puzzles-bot"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23127
+
+[services.development]
+run = "pnpm --filter @workspace/puzzles-bot run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/puzzles-bot", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/puzzles-bot/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23127"
+BASE_PATH = "/"
