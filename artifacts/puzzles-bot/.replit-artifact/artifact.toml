@@ -15,13 +15,18 @@ localPort = 23127
 run = "pnpm --filter @workspace/puzzles-bot run dev"
 
 [services.production]
-build = [ "pnpm", "--filter", "@workspace/puzzles-bot", "run", "build" ]
-serve = "static"
-publicDir = "artifacts/puzzles-bot/dist/public"
 
-[[services.production.rewrites]]
-from = "/*"
-to = "/index.html"
+[services.production.build]
+args = [ "pnpm", "--filter", "@workspace/discord-bot", "run", "build" ]
+
+[services.production.build.env]
+NODE_ENV = "production"
+
+[services.production.run]
+args = [ "pnpm", "--filter", "@workspace/discord-bot", "run", "start" ]
+
+[services.production.run.env]
+NODE_ENV = "production"
 
 [services.env]
 PORT = "23127"

@@ -2,3 +2,4 @@
 - [Season archive model](season-archive-model.md) — keep active totals on player records and snapshot them before starting a new season.
 - [Static Discord replies](static-discord-replies.md) — help and other static commands must reply immediately without service or database work.
 - [Reserved VM config](reserved-vm-config.md) — this workspace's validated `.replit` deployment identifier is `vm`, not `reservedvm`.
+- [Artifact deployment routing](artifact-deployment-routing.md) — Publishing discovers registered deployable artifacts, not bare packages under `bots/`.
