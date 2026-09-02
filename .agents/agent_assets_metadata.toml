@@ -1,0 +1,16 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "pDxa3bTmPeG2ycqAvlZeU"
+uri = "file://exports/puzzles-bot-quaxly.zip"
+type = "unspecified"
+title = "Puzzles Bot — paquete standalone para Quaxly"
+description = "ZIP listo para subir manualmente a Quaxly. Incluye código del bot y lib/db, package-lock.json, build standalone con esbuild, .env.example sin valores y README-QUAXLY.md con los comandos npm ci, npm run build y npm start. No incluye node_modules, dist ni secretos."
+logical_id = "0fa9b96f-0085-4547-8568-a46d1ffdf7bb"
+content_hash = "sha256:7d0696b822867c54537b224997b1223b6c08db5dcb2b65928bbef3fa01faa6cb"
+size = 27829
+mtime_ms = 1788310315389
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:9bd16d20-dcad-48f8-9efe-87910b43b9cf/0fa9b96f-0085-4547-8568-a46d1ffdf7bb/645a020f-8709-4742-8d38-a4d186f1027f"
+storage_version_token = "1788310321867125"
+content_type = "application/octet-stream"
