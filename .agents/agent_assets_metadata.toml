@@ -14,3 +14,17 @@ mtime_ms = 1788310315389
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:9bd16d20-dcad-48f8-9efe-87910b43b9cf/0fa9b96f-0085-4547-8568-a46d1ffdf7bb/645a020f-8709-4742-8d38-a4d186f1027f"
 storage_version_token = "1788310321867125"
 content_type = "application/octet-stream"
+
+[[outputs]]
+id = "LdBXfsyw84iLf6XeLVxwo"
+uri = "file://puzzles-bot-quaxly.zip"
+type = "unspecified"
+title = "puzzles-bot-quaxly.zip — descarga móvil"
+description = "Copia idéntica de exports/puzzles-bot-quaxly.zip, colocada en la raíz para facilitar la descarga desde el File Manager de Replit. Tamaño: 27,829 bytes."
+logical_id = "0727a396-2255-4e54-98a4-2640f4489cc1"
+content_hash = "sha256:7d0696b822867c54537b224997b1223b6c08db5dcb2b65928bbef3fa01faa6cb"
+size = 27829
+mtime_ms = 1788310315389
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:9bd16d20-dcad-48f8-9efe-87910b43b9cf/0727a396-2255-4e54-98a4-2640f4489cc1/61996af0-efb2-4cd3-989e-02524183b66b"
+storage_version_token = "1788310963417976"
+content_type = "application/octet-stream"
